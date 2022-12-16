@@ -15,7 +15,7 @@ app.get('/receipts/:id/points', (req, res) => {
     receipts.forEach(element => {
         if (element["id"] === id) res.json({"points": `${element["points"]}`});
     });
-    res.json("id not found");
+    
 });
 
 // POST request for processing receipts
@@ -29,7 +29,6 @@ app.post('/receipts/process', async (req, res) => {
     let id = generateID(data);
     data["id"] = id;
     data["points"] = points;
-    console.log(data);
     receipts.push(data);
     res.json({"id": `${id}`});
 });
@@ -44,15 +43,11 @@ function calculatePoints(receiptData) {
 
     // Use regex to get rid of any characters that aren't alphanumeric
     let trimmedName = receiptData["retailer"].replace(/\W/g, "");
-    console.log(trimmedName);
-    console.log(trimmedName.length);
     total += trimmedName.length;
     
     // Check if total is a whole dollar amount (+50 points)
     let receiptTotal = receiptData["total"];
-    console.log(receiptTotal);
     let totalSplit = receiptTotal.split('.');
-    console.log(totalSplit);
     if (totalSplit[1] == '00') total += 50;
 
     // Check if total is multiple of 0.25 (+25 points)
@@ -60,7 +55,6 @@ function calculatePoints(receiptData) {
 
     // Check how many items are in receipt (+5 points for every 2 items)
     let numItems = Math.floor(receiptData["items"].length / 2);
-    console.log(numItems);
     total += (5 * numItems);
 
     // If trimmed length of item description is multiple of 3, multiple price by 0.2, round up to nearest int, add to points
@@ -78,7 +72,6 @@ function calculatePoints(receiptData) {
     let timePurchased = receiptData["purchaseTime"];
     if (timePurchased >= "14:00" && timePurchased <= "16:00") total += 10;
     
-    console.log(total);
     return total;
 }
 
@@ -93,7 +86,6 @@ function generateID(receipt) {
     id += receipt["retailer"].charAt(0);
     id += receipt["purchaseDate"];
     id += receipt["purchaseTime"];
-    console.log(id);
     return id;
 }
 
