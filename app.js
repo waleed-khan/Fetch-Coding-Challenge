@@ -15,6 +15,7 @@ app.get('/receipts/:id/points', (req, res) => {
     receipts.forEach(element => {
         if (element["id"] === id) res.json({"points": `${element["points"]}`});
     });
+    res.json("Id not found in receipts");
     
 });
 
