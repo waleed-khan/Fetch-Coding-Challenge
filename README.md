@@ -5,7 +5,7 @@ Dockerfile is included to successfully build the project
 ## To test the endpoints of the API, use the following commands to allow Docker to use ports on local system
 
 
-#### docker build -t fetch-challenge
+#### docker build -t fetch-challenge .
 
 #### docker run -p 3000:3000 fetch-challenge
 
