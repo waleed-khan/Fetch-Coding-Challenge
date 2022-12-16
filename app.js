@@ -11,8 +11,11 @@ let receipts = [];
 // GET request to retrieve points from id 
 app.get('/receipts/:id/points', (req, res) => {
     let id = req.params.id;
-    console.log(id);
-    res.json({"points": 'Hello World'});
+    if (receipts.length === 0) res.json("No receipts");
+    receipts.forEach(element => {
+        if (element["id"] === id) res.json({"points": `${element["points"]}`});
+    });
+    res.json("id not found");
 });
 
 // POST request for processing receipts
@@ -24,11 +27,18 @@ app.post('/receipts/process', async (req, res) => {
                 items: req.body.items};
     let points = calculatePoints(data);
     let id = generateID(data);
+    data["id"] = id;
+    data["points"] = points;
     console.log(data);
+    receipts.push(data);
     res.json({"id": `${id}`});
 });
 
-// Function that calculates the points earned for each receipt 
+/** Returns number of points earned on receipt
+ * 
+ * @param {JSON} receiptData 
+ * @returns {number} of points earned
+ */
 function calculatePoints(receiptData) {
     let total = 0;
 
@@ -72,9 +82,19 @@ function calculatePoints(receiptData) {
     return total;
 }
 
-// Function that generates a unique ID for each receipt
+/** Very simple hash function that generates "unique" id for receipt
+ *  For more security, could use hash like md5 or random number generators
+ * 
+ * @param {JSON} receipt 
+ * @returns {string} id generated for receipt
+ */
 function generateID(receipt) {
-    return 1;
+    let id = "";
+    id += receipt["retailer"].charAt(0);
+    id += receipt["purchaseDate"];
+    id += receipt["purchaseTime"];
+    console.log(id);
+    return id;
 }
 
 app.listen(port, () => console.log(`listening on ${port}`));
