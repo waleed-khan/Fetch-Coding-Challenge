@@ -1,4 +1,5 @@
 FROM node:alpine
 COPY . /app
+WORKDIR /app
 RUN npm install
-CMD node /app/app.js
+CMD node app.js
